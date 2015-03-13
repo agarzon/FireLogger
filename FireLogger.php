@@ -117,27 +117,8 @@
                     //throw new InvalidArgumentException("Level {$level} is not defined");
             }
 
-            list($msg, $ctx) = $this->interpolate($message, $context);
-            array_unshift($ctx, $level, $msg);
-            call_user_func_array(array($this, 'firelog'), $ctx);
-        }
-
-        private function interpolate($message, array $context) {
-            $fcontext = array();
-
-            $fmessage = preg_replace_callback("/\{([\._A-Za-z0-9]+)\}/",
-                function ($matches) use (&$context, &$fcontext) {
-                    if(isset($context[$matches[1]])) {
-                        $fcontext[] = $context[$matches[1]];
-                        return "%o";
-                    } else {
-                        return $matches[0];
-                    }
-                },
-                $message
-            );
-
-            return array($fmessage, $fcontext);
+            array_unshift($context, $level, $message);
+            call_user_func_array(array($this, 'firelog'), $context);
         }
 
         //------------------------------------------------------------------------------------------------------
